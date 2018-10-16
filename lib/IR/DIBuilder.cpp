@@ -470,6 +470,19 @@ DICompositeType *DIBuilder::createStructType(
   return R;
 }
 
+DICompositeType *DIBuilder::createInterfaceType(
+    DIScope *Context, StringRef Name, DIFile *File, unsigned LineNumber,
+    uint64_t SizeInBits, uint32_t AlignInBits, DINode::DIFlags Flags,
+    DIType *DerivedFrom, DINodeArray Elements, unsigned RunTimeLang,
+    DIType *VTableHolder, StringRef UniqueIdentifier) {
+  auto *R = DICompositeType::get(
+      VMContext, dwarf::DW_TAG_interface_type, Name, File, LineNumber,
+      getNonCompileUnitScope(Context), DerivedFrom, SizeInBits, AlignInBits, 0,
+      Flags, Elements, RunTimeLang, VTableHolder, nullptr, UniqueIdentifier);
+  trackIfUnresolved(R);
+  return R;
+}
+
 DICompositeType *DIBuilder::createUnionType(
     DIScope *Scope, StringRef Name, DIFile *File, unsigned LineNumber,
     uint64_t SizeInBits, uint32_t AlignInBits, DINode::DIFlags Flags,

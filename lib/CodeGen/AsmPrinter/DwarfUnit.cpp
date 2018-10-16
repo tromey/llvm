@@ -843,6 +843,7 @@ void DwarfUnit::constructTypeDIE(DIE &Buffer, const DICompositeType *CTy) {
   case dwarf::DW_TAG_variant_part:
   case dwarf::DW_TAG_structure_type:
   case dwarf::DW_TAG_union_type:
+  case dwarf::DW_TAG_interface_type:
   case dwarf::DW_TAG_class_type: {
     // Emit the discriminator for a variant part.
     DIDerivedType *Discriminator = nullptr;
@@ -926,7 +927,7 @@ void DwarfUnit::constructTypeDIE(DIE &Buffer, const DICompositeType *CTy) {
 
     // Add template parameters to a class, structure or union types.
     // FIXME: The support isn't in the metadata for this yet.
-    if (Tag == dwarf::DW_TAG_class_type ||
+    if (Tag == dwarf::DW_TAG_class_type || Tag == dwarf::DW_TAG_interface_type ||
         Tag == dwarf::DW_TAG_structure_type || Tag == dwarf::DW_TAG_union_type)
       addTemplateParams(Buffer, CTy->getTemplateParams());
 
@@ -951,12 +952,12 @@ void DwarfUnit::constructTypeDIE(DIE &Buffer, const DICompositeType *CTy) {
 
   if (Tag == dwarf::DW_TAG_enumeration_type ||
       Tag == dwarf::DW_TAG_class_type || Tag == dwarf::DW_TAG_structure_type ||
-      Tag == dwarf::DW_TAG_union_type) {
+      Tag == dwarf::DW_TAG_union_type || Tag == dwarf::DW_TAG_interface_type) {
     // Add size if non-zero (derived types might be zero-sized.)
     // TODO: Do we care about size for enum forward declarations?
     if (Size)
       addUInt(Buffer, dwarf::DW_AT_byte_size, None, Size);
-    else if (!CTy->isForwardDecl())
+    else if (!CTy->isForwardDecl() && Tag != dwarf::DW_TAG_interface_type)
       // Add zero size if it is not a forward declaration.
       addUInt(Buffer, dwarf::DW_AT_byte_size, None, 0);
 
@@ -1393,7 +1394,8 @@ DIE &DwarfUnit::constructMemberDIE(DIE &Buffer, const DIDerivedType *DT) {
   if (!Name.empty())
     addString(MemberDie, dwarf::DW_AT_name, Name);
 
-  if (DIType *Resolved = resolve(DT->getBaseType()))
+  DIType *Resolved = resolve(DT->getBaseType());
+  if (Resolved)
     addType(MemberDie, Resolved);
 
   addSourceLine(MemberDie, DT);
@@ -1414,6 +1416,9 @@ DIE &DwarfUnit::constructMemberDIE(DIE &Buffer, const DIDerivedType *DT) {
     addUInt(*VBaseLocationDie, dwarf::DW_FORM_data1, dwarf::DW_OP_plus);
 
     addBlock(MemberDie, dwarf::DW_AT_data_member_location, VBaseLocationDie);
+  } else if (DT->getTag() == dwarf::DW_TAG_inheritance && Resolved &&
+             Resolved->getTag() == dwarf::DW_TAG_interface_type) {
+    // Nothing.
   } else {
     uint64_t Size = DT->getSizeInBits();
     uint64_t FieldSize = DD->getBaseTypeSize(DT);

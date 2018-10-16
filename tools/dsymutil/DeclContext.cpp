@@ -101,7 +101,7 @@ PointerIntPair<DeclContext *, 1> DeclContextTree::getChildDeclContext(
     ShortNameRef = NameRef;
 
   if (Tag != dwarf::DW_TAG_class_type && Tag != dwarf::DW_TAG_structure_type &&
-      Tag != dwarf::DW_TAG_union_type &&
+      Tag != dwarf::DW_TAG_union_type && Tag != dwarf::DW_TAG_interface_type &&
       Tag != dwarf::DW_TAG_enumeration_type && NameRef.empty())
     return PointerIntPair<DeclContext *, 1>(nullptr);
 

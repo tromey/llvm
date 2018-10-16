@@ -1289,6 +1289,7 @@ Error MetadataLoader::MetadataLoaderImpl::parseOneMetadata(
         (Tag == dwarf::DW_TAG_enumeration_type ||
          Tag == dwarf::DW_TAG_class_type ||
          Tag == dwarf::DW_TAG_structure_type ||
+         Tag == dwarf::DW_TAG_interface_type ||
          Tag == dwarf::DW_TAG_union_type)) {
       Flags = Flags | DINode::FlagFwdDecl;
     } else {

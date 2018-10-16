@@ -395,6 +395,23 @@ namespace llvm {
         DIType *DerivedFrom, DINodeArray Elements, unsigned RunTimeLang = 0,
         DIType *VTableHolder = nullptr, StringRef UniqueIdentifier = "");
 
+    /// Create debugging information entry for a interface.
+    /// \param Scope        Scope in which this interface is defined.
+    /// \param Name         Interface name.
+    /// \param File         File where this member is defined.
+    /// \param LineNumber   Line number.
+    /// \param SizeInBits   Member size.
+    /// \param AlignInBits  Member alignment.
+    /// \param Flags        Flags to encode member attribute, e.g. private
+    /// \param Elements     Interface elements.
+    /// \param RunTimeLang  Optional parameter, Objective-C runtime version.
+    /// \param UniqueIdentifier A unique identifier for the interface.
+    DICompositeType *createInterfaceType(
+        DIScope *Scope, StringRef Name, DIFile *File, unsigned LineNumber,
+        uint64_t SizeInBits, uint32_t AlignInBits, DINode::DIFlags Flags,
+        DIType *DerivedFrom, DINodeArray Elements, unsigned RunTimeLang = 0,
+        DIType *VTableHolder = nullptr, StringRef UniqueIdentifier = "");
+
     /// Create debugging information entry for an union.
     /// \param Scope        Scope in which this union is defined.
     /// \param Name         Union name.

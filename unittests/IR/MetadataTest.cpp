@@ -1487,6 +1487,38 @@ TEST_F(DICompositeTypeTest, variant_part) {
   EXPECT_EQ(N->getDiscriminator(), Discriminator);
 }
 
+TEST_F(DICompositeTypeTest, interface_type) {
+  unsigned Tag = dwarf::DW_TAG_interface_type;
+  StringRef Name = "some name";
+  DIFile *File = getFile();
+  unsigned Line = 1;
+  DIScope *Scope = getSubprogram();
+  DIType *BaseType = getCompositeType();
+  uint64_t SizeInBits = 0;
+  uint32_t AlignInBits = 0;
+  uint64_t OffsetInBits = 0;
+  DINode::DIFlags Flags = static_cast<DINode::DIFlags>(5);
+  unsigned RuntimeLang = 6;
+  StringRef Identifier = "some id";
+
+  auto *N = DICompositeType::get(
+      Context, Tag, Name, File, Line, Scope, BaseType, SizeInBits, AlignInBits,
+      OffsetInBits, Flags, nullptr, RuntimeLang, nullptr, nullptr, Identifier);
+
+  // Test the hashing.
+  auto *Same = DICompositeType::get(
+      Context, Tag, Name, File, Line, Scope, BaseType, SizeInBits, AlignInBits,
+      OffsetInBits, Flags, nullptr, RuntimeLang, nullptr, nullptr, Identifier);
+  auto *Struct = DICompositeType::get(
+      Context, dwarf::DW_TAG_structure_type, Name, File, Line, Scope, BaseType, SizeInBits,
+      AlignInBits, OffsetInBits, Flags, nullptr, RuntimeLang, nullptr, nullptr, Identifier);
+
+  EXPECT_EQ(N, Same);
+  EXPECT_NE(Same, Struct);
+
+  EXPECT_EQ(N->getTag(), Tag);
+}
+
 typedef MetadataTest DISubroutineTypeTest;
 
 TEST_F(DISubroutineTypeTest, get) {

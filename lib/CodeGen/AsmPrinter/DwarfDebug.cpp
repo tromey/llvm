@@ -1729,6 +1729,7 @@ static dwarf::PubIndexEntryDescriptor computeIndexValue(DwarfUnit *CU,
   switch (Die->getTag()) {
   case dwarf::DW_TAG_class_type:
   case dwarf::DW_TAG_structure_type:
+  case dwarf::DW_TAG_interface_type:
   case dwarf::DW_TAG_union_type:
   case dwarf::DW_TAG_enumeration_type:
     return dwarf::PubIndexEntryDescriptor(

@@ -4388,6 +4388,7 @@ The following ``tag:`` values are valid:
   DW_TAG_enumeration_type = 4
   DW_TAG_structure_type   = 19
   DW_TAG_union_type       = 23
+  DW_TAG_interface_type   = 56
 
 For ``DW_TAG_array_type``, the ``elements:`` should be :ref:`subrange
 descriptors <DISubrange>`, each representing the range of subscripts at that
@@ -4399,7 +4400,7 @@ descriptors <DIEnumerator>`, each representing the definition of an enumeration
 value for the set. All enumeration type descriptors are collected in the
 ``enums:`` field of the :ref:`compile unit <DICompileUnit>`.
 
-For ``DW_TAG_structure_type``, ``DW_TAG_class_type``, and
+For ``DW_TAG_structure_type``, ``DW_TAG_class_type``, ``DW_TAG_interface_type``, and
 ``DW_TAG_union_type``, the ``elements:`` should be :ref:`derived types
 <DIDerivedType>` with ``tag: DW_TAG_member``, ``tag: DW_TAG_inheritance``, or
 ``tag: DW_TAG_friend``; or :ref:`subprograms <DISubprogram>` with
